@@ -1,7 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
-#include "motor.h"
 
+#include "motor.h"
 #include "comunicacion.h"
 
 // Variable privada para recordar el prescaler actual
@@ -125,8 +128,8 @@ int comando_Dnnn(int dutyCycle){
         printf("Comando Dnnn: Fuera de rango 0-100%%\n");
         return -1;
     }
-    OCR1A = ICR1 * dutyCycle / 100;
-    OCR1B = ICR1 * dutyCycle / 100;
+    OCR1A = (dutyCycle / 100) * ICR1;
+    OCR1B = (dutyCycle / 100) * ICR1;
     printf("Duty Cycle: %d%%\n", dutyCycle);
     return 0;
 }
@@ -153,13 +156,15 @@ int interpretar_comando(char* comando){
             else if(comando[2] == 'I') return comando_SI();
             else return -1;
         
-        case 'D':
+        case 'D': {
             int dutyCycle = atoi(&comando[2]);
             return comando_Dnnn(dutyCycle);
-        
-        case 'P':
+        }
+
+        case 'P': {
             uint16_t T_microsec = atoi(&comando[2]);
             return comando_Pnnnn(T_microsec);
+        }
         
         default:
             return -1;
