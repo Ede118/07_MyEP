@@ -1,6 +1,6 @@
 <circuit version="1.1.0-SR1" rev="2005" stepSize="1000000" stepsPS="1000000" NLsteps="100000" reaStep="1000000" animate="0" >
 
-<item itemtype="MCU" CircId="mega328-7" mainComp="false" Show_id="true" Show_Val="false" Pos="-772,20" rotation="0" hflip="1" vflip="1" label="ATmega328" idLabPos="0,-20" labelrot="0" valLabPos="-16,20" valLabRot="0" Frequency="16 MHz" Auto_Load="false" saveEepr="true" Logic_Symbol="false" Rst_enabled="false" Ext_Osc="false" Wdt_enabled="false" Clk_Out="false" MainMcu="false" SerialMon="-1" />
+<item itemtype="MCU" CircId="mega328-7" mainComp="false" Show_id="true" Show_Val="false" Pos="-772,20" rotation="0" hflip="1" vflip="1" label="ATmega328" idLabPos="0,-20" labelrot="0" valLabPos="-16,20" valLabRot="0" Frequency="16 MHz" Program="MyEP - Codigo/.pio/build/ATmega328/firmware.hex" Auto_Load="false" saveEepr="true" Logic_Symbol="false" Rst_enabled="false" Ext_Osc="false" Wdt_enabled="false" Clk_Out="false" MainMcu="true" SerialMon="-1" />
 
 <item itemtype="Fixed Voltage" CircId="Fixed Voltage-11" mainComp="false" Show_id="true" Show_Val="false" Pos="-404,-100" rotation="-360" hflip="-1" vflip="1" label="V12" idLabPos="-3.05184,-24" labelrot="0" valLabPos="-16,8" valLabRot="0" Voltage="12 V" Out="true" />
 
@@ -21,6 +21,8 @@
 <item itemtype="Diode" CircId="Diode-36" mainComp="false" Show_id="false" Show_Val="false" Pos="-444,-44" rotation="270" hflip="1" vflip="1" label="Diode-36" idLabPos="-16,-24" labelrot="0" valLabPos="-16,6" valLabRot="0" Model="Diode Default" Threshold="0.634767 V" MaxCurrent="1 A" Resistance="0.05 Ω" BrkDownV="0 V" SatCurrent="171.435 nA" EmCoef="2" />
 
 <item itemtype="Fixed Voltage" CircId="Fixed Voltage-55" mainComp="false" Show_id="true" Show_Val="false" Pos="-864,52" rotation="-360" hflip="1" vflip="1" label="INTERRUPTOR" idLabPos="-3.05184,-24" labelrot="0" valLabPos="-16,8" valLabRot="0" Voltage="5 V" Out="false" />
+
+<item itemtype="SerialTerm" CircId="SerialTerm-56" mainComp="false" Show_id="false" Show_Val="false" Pos="-796,-64" rotation="0" hflip="1" vflip="1" label="SerialTerm-56" idLabPos="-20,-32" labelrot="0" valLabPos="-16,20" valLabRot="0" Baudrate="9600 _Bd" DataBits="8 _bits" StopBits="1 _bits" SerialMon="false" />
 
 <item itemtype="Node" CircId="Node-21" mainComp="false" Pos="-656,104" />
 
@@ -105,5 +107,9 @@
 <item itemtype="Connector" uid="Connector-117" startpinid="mega328-7-PORTB5" endpinid="L298P-14-EnA" pointList="-732,100,-708,100,-708,68,-636,68" />
 
 <item itemtype="Connector" uid="Connector-126" startpinid="Fixed Voltage-55-outnod" endpinid="mega328-7-PORTD2" pointList="-848,52,-780,52" />
+
+<item itemtype="Connector" uid="Connector-127" startpinid="mega328-7-PORTD0" endpinid="SerialTerm-56-pin0" pointList="-780,36,-840,36,-840,-72,-820,-72" />
+
+<item itemtype="Connector" uid="Connector-128" startpinid="mega328-7-PORTD1" endpinid="SerialTerm-56-pin1" pointList="-780,44,-828,44,-828,-56,-820,-56" />
 
 </circuit>

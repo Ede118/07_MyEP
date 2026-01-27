@@ -8,10 +8,10 @@
 #include "comunicacion.h"
 
 // Variable privada para recordar el prescaler actual
-static uint16_t current_prescaler = 1;
+static uint32_t current_prescaler = 1;
 static volatile uint8_t flag_imax = 0;
 
-static inline uint8_t elegir_prescaler(uint32_t freq){
+static inline uint32_t elegir_prescaler(uint32_t freq){
     // Limpio los bits de prescaler
     TCCR1B &= ~((1<<CS12) | (1<<CS11) | (1<<CS10));
 
@@ -85,7 +85,7 @@ void motor_init(uint32_t freq){
     TCCR1A &= ~(1 << COM1B1);
     
     // Prescaler al comienzo
-    uint8_t prescaler;
+    uint32_t prescaler;
     current_prescaler = elegir_prescaler(freq); // Guardamos el prescaler elegido
     prescaler = current_prescaler;
 
