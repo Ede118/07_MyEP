@@ -2,20 +2,22 @@
 #include <util/delay.h>
 #include "comunicacion.h"
 
-volatile char buffer_rx[50];
-volatile int flag_listo = 0;
-volatile int i_rx = 0;
 
+char buffer_usuario[50];
+int echo = 0;
 
 int main(){
   // Settings
+  UART_init(9600, 1, 1);
+  sei();
+  printf("Barrios Retta 14101\n");
 
   // Work Loop
   while(1){
-
+    if(UART_flag()){
+      UART_Getter(buffer_usuario);
+      if(echo) printf("Echo: %s\n", buffer_usuario);
+      
+    }
   }
-}
-
-ISR(USART_RX_vect){
-    escribir_NI_UART((char *)buffer_rx, (int *)&flag_listo, (int *)&i_rx);
 }
