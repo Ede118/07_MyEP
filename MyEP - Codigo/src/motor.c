@@ -4,7 +4,14 @@
 
 #include "comunicacion.h"
 
+// Variable privada para recordar el prescaler actual
+static uint16_t current_prescaler = 1;
+static volatile uint8_t flag_imax = 0;
+
 static inline uint8_t elegir_prescaler(uint32_t freq){
+    // Limpio los bits de prescaler
+    TCCR1B &= ~((1<<CS12) | (1<<CS11) | (1<<CS10));
+
     if(F_CPU/freq/65536 <= 1){
         TCCR1B |= (1<<CS10);
         return 1;
@@ -42,7 +49,8 @@ static inline void conectar_OC1B(void){
 }
 
 static inline void TOP_ICR1(uint16_t freq){
-    ICR1 = F_CPU/freq - 1;
+    // Usa el prescaler actual para calcular el TOP correcto
+    ICR1 = (F_CPU / current_prescaler) / freq - 1;
 }
 
 void motor_init(uint32_t freq){
@@ -58,6 +66,8 @@ void motor_init(uint32_t freq){
 
     // Habilitar interrupciones
     sei();
+    EICRA |= (3 << ISC00); // Flanco de subida para INT0
+    EIMSK |= (1 << INT0);  // Mascara habilitada para INT0
 
     // Modo 14: Fast PWM ICR1
     TCCR1A |= (1<<WGM11); 
@@ -73,7 +83,8 @@ void motor_init(uint32_t freq){
     
     // Prescaler al comienzo
     uint8_t prescaler;
-    prescaler = elegir_prescaler(freq);
+    current_prescaler = elegir_prescaler(freq); // Guardamos el prescaler elegido
+    prescaler = current_prescaler;
 
     // Top en ICR1
     ICR1 = F_CPU/freq/prescaler - 1;
@@ -83,26 +94,30 @@ void motor_init(uint32_t freq){
     OCR1B = ICR1 / 2;
 }
 
-void comando_E0(void){
+int comando_E0(void){
     HAB_LOW;
     printf("ENA: Off\n");
+    return 0;
 }
 
-void comando_E1(void){
+int comando_E1(void){
     HAB_HIGH;
     printf("ENA: On\n");
+    return 0;
 }
 
-void comando_SD(void){
+int comando_SD(void){
     desconectar_OC1A();
     conectar_OC1B();
     printf("Sentido de giro: Directo\n");
+    return 0;
 }
 
-void comando_SI(void){
+int comando_SI(void){
     conectar_OC1A();
     desconectar_OC1B();
     printf("Sentido de giro: Inverso\n");
+    return 0;
 }
 
 int comando_Dnnn(int dutyCycle){
@@ -116,48 +131,50 @@ int comando_Dnnn(int dutyCycle){
     return 0;
 }
 
-void comando_Pnnnn(uint16_t T_microsec){
+int comando_Pnnnn(uint16_t T_microsec){
     if((T_microsec < 10) || (T_microsec > 1000)){
         printf("Comando Pnnnn: Fuera de rango 10-1000 us\n");
-        return;
+        return -1;
     }
     TOP_ICR1(1000000/T_microsec);
+    return 0;
 }
 
 int interpretar_comando(char* comando){
-    if(!strcmp(comando[0], ':')) return -1;
+    if(comando[0] != ':') return -1;
     switch(comando[1]){
         case 'E':
-            switch(comando[2]){
-                case '0':
-                    comando_E0();
-                    return 0;
-                case '1':
-                    comando_E1();
-                    return 0;
-                default:
-                    return -1;
-            }
-        case 'S':
-            switch(comando[2]){
-                case 'D':
-                    comando_SD();
-                    return 0;
-                case 'I':
-                    comando_SI();
-                    return 0;
-                default:
-                    return -1;
-            }
+            if(comando[2] == '0') return comando_E0();
+            else if(comando[2] == '1') return comando_E1();
+            else return -1;
+        
+            case 'S':
+            if(comando[2] == 'D') return comando_SD();
+            else if(comando[2] == 'I') return comando_SI();
+            else return -1;
+        
         case 'D':
             int dutyCycle = atoi(&comando[2]);
-            comando_Dnnn(dutyCycle);
-            return 0;
+            return comando_Dnnn(dutyCycle);
+        
         case 'P':
             uint16_t T_microsec = atoi(&comando[2]);
-            comando_Pnnnn(T_microsec);
-            return 0;
+            return comando_Pnnnn(T_microsec);
+        
         default:
             return -1;
     }
+}
+
+int motor_check_imax(void){
+    return flag_imax;
+}
+
+ISR(INT0_vect){
+    desconectar_OC1A();
+    desconectar_OC1B();
+    PW1_LOW;
+    PW2_LOW;
+    HAB_LOW;
+    flag_imax = 1;
 }

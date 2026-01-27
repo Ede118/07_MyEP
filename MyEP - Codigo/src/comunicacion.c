@@ -66,7 +66,10 @@ int UART_flag(void) {
 
 
 void UART_Getter(char* buffer_usuario) {
+    // Seccion critica: Deshabilitar interrupciones
+    cli();
     strcpy(buffer_usuario, (char*)buffer_rx); 
     flag_listo = 0;
     indice = 0;
+    sei(); // Rehabilitar interrupciones
 }

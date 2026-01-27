@@ -25,12 +25,13 @@
 
 void motor_init(uint32_t freq);
 
-void comando_E0(void);
-void comando_E1(void);
-void comando_SD(void);
-void comando_SI(void);
-void comando_Dnnn(int dutyCycle);
-void comando_Pnnnn(uint16_t T_microsec);
+int comando_E0(void);
+int comando_E1(void);
+int comando_SD(void);
+int comando_SI(void);
+int comando_Dnnn(int dutyCycle);
+int comando_Pnnnn(uint16_t T_microsec);
+int motor_check_imax(void);
 
 int interpretar_comando(char* comando);
 
