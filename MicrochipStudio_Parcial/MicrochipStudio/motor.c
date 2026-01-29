@@ -124,7 +124,7 @@ int comando_SI(void){
     return 0;
 }
 
-int comando_Dnnn(int dutyCycle){
+int comando_Dnnn(uint16_t dutyCycle){
     if((dutyCycle < 0) || (dutyCycle > 100)){
         printf("Comando Dnnn: Fuera de rango 0-100%%\n");
         return -1;
@@ -156,14 +156,14 @@ int interpretar_comando(char* comando){
             else if(comando[2] == '1') return comando_E1();
             else return -1;
         
-            case 'S':
+         case 'S':
             if(comando[2] == 'D') return comando_SD();
             else if(comando[2] == 'I') return comando_SI();
             else return -1;
         
         case 'D': {
-            int dutyCycle = atoi(&comando[2]);
-			dutyCycle /= 10;
+            uint16_t dutyCycle = atoi(&comando[2]); 
+			dutyCycle /= 10; 
             return comando_Dnnn(dutyCycle);
         }
 

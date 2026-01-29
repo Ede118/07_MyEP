@@ -30,7 +30,7 @@ int comando_E0(void);
 int comando_E1(void);
 int comando_SD(void);
 int comando_SI(void);
-int comando_Dnnn(int dutyCycle);
+int comando_Dnnn(uint16_t dutyCycle);
 int comando_Pnnnn(uint16_t T_microsec);
 int motor_check_imax(void);
 

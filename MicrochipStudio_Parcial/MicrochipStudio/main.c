@@ -14,7 +14,6 @@
 #include "motor.h"
 
 
-
 char buffer_usuario[50];
 
 int main(){
